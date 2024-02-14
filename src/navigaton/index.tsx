@@ -1,1 +1,1 @@
-export * from './LoginStackNavitagor';
+export * from './LoginStackNavitgator';
