@@ -38,7 +38,7 @@ export const LoginScreenInclusivo = () => {
 
     async function LeerContrasena() {
         console.log('Loading Sound');
-        const { sound } = await Audio.Sound.createAsync(require('../../assets/audio/Contraseña.mp3')
+        const { sound } = await Audio.Sound.createAsync(require('../../assets/audio/Contrasena.mp3')
         );
         setSound(sound);
         const { durationMillis } = await sound.getStatusAsync();
