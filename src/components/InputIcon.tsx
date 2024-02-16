@@ -7,6 +7,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SettingsContext } from '../context';
 
 interface Props {
+    click?: ()=> void;
+    margenAbajo?: number;
     iconName: string;
     placeholder: string;
     onChangeText: (value: string) => void;
@@ -15,7 +17,7 @@ interface Props {
     style?: StyleProp<ViewStyle>
 }
 
-export const InputIcon = ({ onChangeText, placeholder, iconName, security = false, style }: Props) => {
+export const InputIcon = ({ click, margenAbajo, onChangeText, placeholder, iconName, security = false, style }: Props) => {
     const { settingsState } = useContext(SettingsContext);
     const [securityIcon, setSecurityIcon] = useState("eye");
     const [showSecurity, setShowSecurity] = useState(security);
@@ -27,13 +29,14 @@ export const InputIcon = ({ onChangeText, placeholder, iconName, security = fals
     }
 
     return (
-        <View style={[style, localStyles.container]} >
+        <View style={[style, localStyles.container, {marginBottom: margenAbajo}]} >
             <Ionicons name={iconName} size={40} />
             <TextInput 
                 placeholder={placeholder}
                 onChangeText={onChangeText}
                 secureTextEntry={showSecurity}
                 style={[localStyles.input, { fontSize: settingsState.fontSize }]}
+                onFocus={click}
             />
             {
                 (security) ? (
@@ -56,8 +59,8 @@ const localStyles = StyleSheet.create({
         alignItems: "center",
         width: widthWindow - 60,
         borderRadius: 8,
-        borderWidth: 1,
-        backgroundColor: "white"
+        borderWidth: 1
+        
     },
     input: {
         height: 50,

@@ -4,10 +4,13 @@ import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/
 import { LoginScreen } from "../screens";
 import { AuthContext } from "../context";
 import { BottomTabHomaNavigator } from "./BottomTabHomaNavigator";
+import { StackRouter } from "@react-navigation/native";
+import { LoginScreenInclusivo } from "../screens/LoginScreenInclusivo";
 
 export type RootLoginStackParams  = {
     LoginScreen: undefined;
     HomeNavigator: undefined;
+    LoginScreenInclusivo: undefined;
 }
 
 const Stack = createStackNavigator<RootLoginStackParams>();
@@ -26,6 +29,7 @@ export const LoginStackNavigator = () => {
             ) : (
                 <>
                 <Stack.Screen name="LoginScreen" component={LoginScreen} />
+                <Stack.Screen name = "LoginScreenInclusivo" component={LoginScreenInclusivo}/>
                 </>
             )}
         </Stack.Navigator>
