@@ -40,11 +40,6 @@ export const BottomTabBarPersonalizada = ({  descriptors, insets, navigation, st
                             options.tabBarIcon({ focused: true, color: tintColor!, size: 34 })
                         )}
 
-                        {/* {isFocused && (
-                            <Text style={[ {color: tintColor}, styles.text ]} > 
-                                { label as string } 
-                            </Text>
-                        )} */}
                         <Text style={[ {color: tintColor}, styles.text ]} > 
                             { label as string } 
                         </Text>
@@ -66,7 +61,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         height: 90,
         width: widthWindow - 60,
-        // width: widthWindow,
         marginBottom: 16,
         borderRadius: 40,
         backgroundColor: colors.primary,
@@ -78,7 +72,6 @@ const styles = StyleSheet.create({
         width: 130,
         height: 72,
         borderRadius: 28,
-        // flexDirection: 'row'
     },
     text: {
         fontSize: (widthWindow > 450) ? 10 : 18,
