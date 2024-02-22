@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, Linking } from "react-native";
 
 import * as ImagePicker from 'expo-image-picker';
 import { ItemType } from "react-native-dropdown-picker";
-import { useUploadFile } from "../useUploadFile";
+import { CreateJustificanteResponse } from "../../interfaces";
 import { usePeticionPost } from "../usePeticionPost";
+import { useUploadFile } from "../useUploadFile";
 
 export const useHomeScreen = () => {
+    const [text, setText] = useState(''); // Si se selecciona como motiov "otro"
 
     useEffect(() => {
         (async () => {
@@ -41,14 +43,37 @@ export const useHomeScreen = () => {
         if (!result.canceled) {
             setSelectedImage(result.assets[0].uri)
         } else {
-            Alert.alert('Aviso', 'No seleccionaste nunguna imagen')
+            Alert.alert('Aviso', 'No hay imagen que subir')
         }
     };
 
-    const { form, isLoading, onChange, peticionPostAlert, setIsLoading } = usePeticionPost({ 
+    const { isLoading, peticionPostAlert, setIsLoading } = usePeticionPost({ 
         motivo: '', fecha_justificada_inicio: '', fecha_justificada_fin: '' 
     });
     const { uploadImage, isLoading: isLoadingImg, setIsLoading: setIsLoadingImg } = useUploadFile();
+
+    const handlePeticion = async(token: string) => {
+        let str = motivo.label;
+        if(motivo.label == 'Otro') {
+            str = text;
+        }
+        if(!selectedImage) return Alert.alert('Error', 'Evidencia faltante');
+
+        const res = await peticionPostAlert('/api/justificante', {
+            fecha_justificada_inicio: dates.start,
+            fecha_justificada_fin: dates.end,
+            motivo: str,
+        }, false, { headers: {
+            Authorization: `Bearer ${token}`
+        }});
+        const { justificante } = res as CreateJustificanteResponse;
+        await uploadImage(
+            selectedImage, 
+            `/api/upload/evidencia/${justificante.id}`,
+            token!
+        );
+        setMotivo({});
+    }
 
     return {
         motivos,
@@ -58,10 +83,13 @@ export const useHomeScreen = () => {
         motivo,
         selectImage,
         selectedImage,
-        form,
         isLoading,
-        onChange,
         isLoadingImg,
         setIsLoadingImg,
+        peticionPostAlert,
+        setIsLoading,
+        uploadImage,
+        handlePeticion,
+        setText
     };
 }

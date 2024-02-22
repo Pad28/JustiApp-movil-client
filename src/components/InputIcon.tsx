@@ -2,20 +2,22 @@ import { useContext, useState } from 'react';
 import { StyleSheet, View, TextInput, StyleProp, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { widthWindow } from '../theme/styles';
+import { colors, widthWindow } from '../theme/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SettingsContext } from '../context';
 
 interface Props {
     iconName: string;
     placeholder: string;
-    onChangeText: (value: string) => void;
 
     security?: boolean;
     style?: StyleProp<ViewStyle>
+    value?: string;
+    onChangeText: (value: string) => void;
+    onFocus?: () => void;
 }
 
-export const InputIcon = ({ onChangeText, placeholder, iconName, security = false, style }: Props) => {
+export const InputIcon = ({ onChangeText, placeholder, iconName, security = false, style, value, onFocus }: Props) => {
     const { settingsState } = useContext(SettingsContext);
     const [securityIcon, setSecurityIcon] = useState("eye");
     const [showSecurity, setShowSecurity] = useState(security);
@@ -27,17 +29,19 @@ export const InputIcon = ({ onChangeText, placeholder, iconName, security = fals
     }
 
     return (
-        <View style={[style, localStyles.container]} >
+        <View style={[styles.container, style]} >
             <Ionicons name={iconName} size={40} />
             <TextInput 
+                value={value}
                 placeholder={placeholder}
                 onChangeText={onChangeText}
                 secureTextEntry={showSecurity}
-                style={[localStyles.input, { fontSize: settingsState.fontSize }]}
+                style={[styles.input, { fontSize: settingsState.fontSize }]}
+                onFocus={onFocus}
             />
             {
                 (security) ? (
-                    <TouchableOpacity onPress={handleSecurity} >
+                    <TouchableOpacity onPress={handleSecurity} style={styles.securityButton} >
                         <Ionicons name={securityIcon} size={40} />
                     </TouchableOpacity>
                 ) : (
@@ -48,7 +52,7 @@ export const InputIcon = ({ onChangeText, placeholder, iconName, security = fals
     );
 }
 
-const localStyles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         alignContent: "center",
@@ -57,11 +61,13 @@ const localStyles = StyleSheet.create({
         width: widthWindow - 60,
         borderRadius: 8,
         borderWidth: 1,
-        backgroundColor: "white"
+        backgroundColor: colors.backgroundTerciary,
     },
     input: {
         height: 50,
         width: 220,
         paddingHorizontal: 6,
+    },
+    securityButton: {
     }
 });

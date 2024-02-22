@@ -6,3 +6,4 @@ export * from './DropBox';
 export * from './HeaderApp';
 export * from './InputIcon';
 export * from './ModalInput';
+export * from './Incrementer';

@@ -10,8 +10,8 @@ export interface User {
     correo:       string;
     estado:       boolean;
     rol:          string;
-    tutor:        null;
-    cuatrimestre: null;
-    grupo:        null;
+    tutor:        null | string;
+    cuatrimestre: null | number;
+    grupo:        null | string;
     direccion:    string;
 }

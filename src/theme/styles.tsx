@@ -7,6 +7,8 @@ export const colors = {
     secondary: "#16193F",
     terciary: "#EDB025",
     backgroundPrimary: "#FEF9D1",
+    backgroundSecondary: "#E8E8E8",
+    backgroundTerciary: "white",
 
     buttonPrimary: "#EDB025",
     buttonSecondary: "#16193F",

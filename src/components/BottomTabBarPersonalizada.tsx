@@ -1,9 +1,33 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Keyboard, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { colors, widthWindow } from '../theme/styles';
+import { useEffect, useRef } from 'react';
 
 interface Props extends BottomTabBarProps {}
-export const BottomTabBarPersonalizada = ({  descriptors, insets, navigation, state }: Props) => {
+export const BottomTabBarPersonalizada = ({  descriptors, navigation, state }: Props) => {
+    const translateValue = useRef(new Animated.Value(0)).current;
+
+    const deploy = () => {
+        Animated.timing(translateValue, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    }
+
+    const disguise = () => {
+        Animated.timing(translateValue, {
+            toValue: 1000,
+            duration: 1000,
+            useNativeDriver: true,
+        }).start();
+    }
+    
+    useEffect(() => {
+        deploy();
+        Keyboard.addListener('keyboardDidShow', disguise);
+        Keyboard.addListener('keyboardDidHide', deploy);
+    }, []);
 
     const activeBackgroundColor = colors.terciary;  
     const inactiveBackgroundColor = colors.primary; 
@@ -11,7 +35,12 @@ export const BottomTabBarPersonalizada = ({  descriptors, insets, navigation, st
     const inactiveTintColor = "white";
 
     return (
-        <View style={styles.container}>
+        <Animated.View 
+            style={[
+                styles.container,
+                { transform: [{ translateY: translateValue }] }
+            ]}
+        >
             {state.routes.map((route, index) => {
                 const { options } = descriptors[route.key];
                 const label = 
@@ -46,7 +75,7 @@ export const BottomTabBarPersonalizada = ({  descriptors, insets, navigation, st
                     </TouchableOpacity>
                 );
             })}    
-        </View>
+        </Animated.View>
     );
 
 }

@@ -58,7 +58,11 @@ export const CalendarApp = ({ style, getDates }: Props) => {
                 <Ionicons name="calendar" size={40} />
             </TouchableOpacity>
 
-            <Modal transparent visible={showModal} animationType="slide">
+            <Modal 
+                transparent 
+                visible={showModal} 
+                animationType="slide"
+            >
                 <View style={styles.calendarModal} >
                     <Calendar
                         style={styles.calendar}

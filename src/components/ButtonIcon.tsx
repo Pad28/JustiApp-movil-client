@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
-import { widthWindow } from "../theme/styles";
+import { colors, widthWindow } from "../theme/styles";
 import { useContext } from "react";
 import { SettingsContext } from "../context";
 
@@ -9,39 +9,60 @@ interface Props {
     text: string;
     onPress: () => void;
     iconName: string;
+    label: string;
 }
 
-export const ButtonIcon = ({ style, onPress, text, iconName }: Props) => {
-    const { settingsState } = useContext(SettingsContext)
+export const ButtonIcon = ({ style, onPress, text, iconName, label }: Props) => {
+    const { fontSize } = useContext(SettingsContext).settingsState;
 
     return (
-        <TouchableOpacity 
-            style={[ styles.container, style]}
-            onPress={onPress} 
-        >   
-            <View style={[ styles.column]} >
-                <Text style={{ fontSize: settingsState.fontSize, marginLeft: 20 }} > 
-                    {text} 
-                </Text>
+        <View style={[styles.container, style]} >
+            <View style={styles.constinerLabel} >
+                <Text style={{ ...styles.label, fontSize: fontSize  }} > {label} </Text>
             </View>
-            <View style={[ styles.column, { alignItems: 'flex-end' } ]} >
-                <Ionicons name={iconName} size={28} style={{ marginRight: 20 }} />
-            </View>
-        </TouchableOpacity>
+            <TouchableOpacity
+                onPress={onPress}
+                style={styles.boton}
+            >
+                <View style={{...styles.columnBoton, justifyContent: 'flex-start'}} >
+                    <Text style={{ ...styles.text, fontSize: fontSize }} > {text} </Text>
+                </View>
+                <View style={{...styles.columnBoton, justifyContent: 'flex-end'}} >
+                    <Ionicons name={iconName} size={28} />
+                </View>
+            </TouchableOpacity>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: 'white',
-        width: widthWindow - 50,
-        height: 40,
-        borderRadius: 12
+        width: widthWindow - 40,
+        justifyContent: 'space-between',
     },
-    column: {
+    boton: {
+        flexDirection: 'row',
+        backgroundColor: colors.terciary,
+        width: 210,
+        borderRadius: 12,
+        paddingVertical: 10,
+        paddingHorizontal: 6,
+        height: 'auto',
+    },
+    columnBoton: {
         width: '50%',
+        flexDirection: 'row',
+    },
+    text: {
+        fontWeight: 'bold',
+    },
+    label: {
+        fontWeight: 'bold',
+    },
+    constinerLabel: {
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });

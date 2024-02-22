@@ -1,63 +1,66 @@
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useContext } from "react";
-import { AuthContext } from "../context";
+import { AuthContext, SettingsContext } from "../context";
 
-import { Ionicons } from "@expo/vector-icons";
-import { colors, globalStyles } from "../theme/styles";
+import { colors, globalStyles, widthWindow } from "../theme/styles";
 import { Button, CalendarApp, DropBox, InputIcon } from "../components";
-import { useHomeScreen } from "../hooks/screens/useHomeScreen";
+import { useHomeScreen } from "../hooks";
 
 
 export const HomeScreen = () => {
-    const { authState } = useContext(AuthContext);
+    const { token } = useContext(AuthContext).authState;
+    const { settingsState } = useContext(SettingsContext);
     const {
         motivo, 
         motivos, 
         selectImage, 
         setDates, 
         setMotivo, 
-        selectedImage,
-        onChange,
-        dates,
+        isLoading,
+        setText,
+        handlePeticion
     } = useHomeScreen();
-
-    const handlePeticion = () => {
-        onChange(dates.start, 'fecha_justificada_inicio');
-        onChange(dates.end, 'fecha_justificada_fin');
-    }
 
     return (
         <View style={[ globalStyles.container, styles.container ]} >
-            <CalendarApp style={{ marginTop: 40 }} getDates={setDates} />
-            <DropBox 
-                style={{ marginTop: 20 }}
-                texto="Motivo:"
-                getValue={setMotivo}
-                values={motivos}
-            />
-            {(motivo.value === 'Otro') && (
-                <InputIcon 
+            {(isLoading) ? (
+                <View style={{ marginTop: 200 }} >
+                    <ActivityIndicator size={100} color={colors.secondary} />
+                </View>
+            ) : (
+                <>
+                <CalendarApp style={{ marginTop: 40 }} getDates={setDates} />
+                <DropBox 
                     style={{ marginTop: 20 }}
-                    iconName="pencil" 
-                    placeholder="Ingresa el motivo" 
-                    onChangeText={(value) => onChange(value, 'motivo')} />
-            )}
-            <View style={styles.continaerBoton} >
-            <Ionicons size={80} name="image" />
-                <Button 
-                    style={{ width: 250 }}
-                    onPress={selectImage}
-                    text="Adjuntar evidencia"
-                    fontColor="white"
-                    color={colors.buttonSecondary}
+                    texto="Motivo:"
+                    getValue={setMotivo}
+                    values={motivos}
                 />
-            </View>
+                {(motivo.value === 'Otro') && (
+                    <InputIcon 
+                        style={{ marginTop: 20 }}
+                        iconName="pencil" 
+                        placeholder="Ingresa el motivo" 
+                        onChangeText={setText}/>
+                )}
 
-            <Button 
-                style={{ width: 130, marginTop: 50 }}
-                onPress={handlePeticion}
-                text="Enviar"
-            />
+                <TouchableOpacity style={styles.continaerBoton} onPress={selectImage} >
+                    <Image 
+                        source={require('../../assets/image-icon.png')}
+                        style={{ width: 60, height: 60 }}
+                    />
+                    <Text style={[{ fontSize: settingsState.fontSize}, styles.textBoton]} >
+                        Adjuntar evidencia
+                    </Text>
+                </TouchableOpacity>
+
+                <Button 
+                    style={{ width: 130, marginTop: 50 }}
+                    onPress={() => handlePeticion(token!)}
+                    text="Enviar"
+                />
+                </>
+            )}
         </View>
     );
 }
@@ -69,6 +72,15 @@ const styles = StyleSheet.create({
     continaerBoton: { 
         flexDirection: 'row', 
         alignItems: 'center', 
-        marginTop: 50 
+        justifyContent: 'space-around',
+        paddingVertical: 4,
+        marginTop: 50,
+        width: widthWindow - 100,
+        backgroundColor: colors.secondary,
+        borderRadius: 10,
+    },
+    textBoton: {
+        color: 'white', 
+        fontWeight: 'bold'
     }
 });

@@ -9,9 +9,9 @@ export const usePeticionPost = <T extends Object>(initState: T) => {
     const [isLoading, setIsLoading] = useState(false);
     const { form, onChange, validateEmptyFields } = useForm(initState);
 
-    const peticionPost = async(path:string, body: Object, config?: AxiosRequestConfig) => {
+    const peticionPost = async(path:string, body: Object, validateEmpty: boolean, config?: AxiosRequestConfig) => {
         setIsLoading(true);
-        validateEmptyFields("Completa todos los campos");
+        if(validateEmpty) validateEmptyFields('Completa todos los campos');
         const response = await JustiAppApi.post(path, body, config)
             .catch(error => {
                 setIsLoading(false);
@@ -27,11 +27,11 @@ export const usePeticionPost = <T extends Object>(initState: T) => {
         return response.data;
     }
 
-    const peticionPostAlert = async(path:string, body: Object, config?: AxiosRequestConfig) => {
-        const result = await peticionPost(path, body, config)
+    const peticionPostAlert = async(path:string, body: Object, validateEmpty: boolean, config?: AxiosRequestConfig, alertMessage?: string) => {
+        const result = await peticionPost(path, body, validateEmpty, config)
             .catch(error => {
                 setIsLoading(false);
-                Alert.alert("Error", error.message)
+                Alert.alert("Error", (alertMessage) ? alertMessage : error.message);
             });
         return result;
     }
@@ -42,6 +42,6 @@ export const usePeticionPost = <T extends Object>(initState: T) => {
         isLoading,
         setIsLoading,
         peticionPost,
-        peticionPostAlert
+        peticionPostAlert,
     }
 }

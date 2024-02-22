@@ -1,26 +1,40 @@
 import { Modal, StyleSheet, View } from "react-native";
 import { InputIcon } from "./InputIcon";
 import { Button } from "./Button";
-import { colors } from "../theme/styles";
+import { colors, widthWindow } from "../theme/styles";
 
 interface Props {
     showModal: boolean;
-    setShowModal: (value: boolean) => void;
     iconName: string;
-    onChangeText: (value: string) => void;
     placeHolder: string;
+    value?: string;
+    onChangeText: (value: string) => void;
+    setShowModal: (value: boolean) => void;
+    onPressAceptar: () => void;
+    security?: boolean;
 }
 
 export const ModalInput = (props: Props) => {
-    const { iconName, onChangeText,placeHolder, showModal, setShowModal } = props;
+    const { 
+        iconName, onChangeText,placeHolder, showModal, setShowModal, onPressAceptar, value, security = false
+    } = props;
 
     return (
         <Modal transparent animationType="slide" visible={showModal}>
             <View style={styles.container} >
-                <InputIcon iconName={iconName} onChangeText={onChangeText} placeholder={placeHolder} />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 30, width: '100%' }} >
+                <InputIcon 
+                    iconName={iconName} 
+                    onChangeText={onChangeText} 
+                    placeholder={placeHolder} 
+                    value={value}
+                    style={ styles.input }
+                    security={security}
+                />
+                <View style={styles.botonContainer} >
                     <Button 
                         text="Cancelar" 
+                        fontColor="white"
+                        color={colors.buttonSecondary} 
                         onPress={() => {
                             setShowModal(false);
                             onChangeText('');
@@ -28,9 +42,9 @@ export const ModalInput = (props: Props) => {
                     />
                     
                     <Button text="Aceptar" 
-                        color={colors.buttonSecondary} 
-                        onPress={() => setShowModal(false)} 
-                        fontColor="white"
+                        onPress={() => {
+                            onPressAceptar();
+                        }} 
                     />
                 </View>
             </View>
@@ -38,16 +52,24 @@ export const ModalInput = (props: Props) => {
     );
 }
 
-
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
+        backgroundColor: colors.backgroundSecondary,
         elevation: 8,
         margin: 20,
-
-        height: 300,
-        borderRadius: 10,
+        marginTop: 90,
+        height: 280,
+        borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
+    }, 
+    botonContainer: { 
+        flexDirection: 'row', 
+        justifyContent: 'space-around', 
+        marginTop: 30, 
+        width: '100%' 
+    },
+    input: {
+        marginVertical: 10,
     }
 });
