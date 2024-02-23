@@ -5,11 +5,22 @@ import { useForm } from "./useForm";
 import { JustiAppApi } from "../api/server";
 import { Alert } from "react-native";
 
+interface peticionPostOptions {
+    path: string;
+    body: Object;
+    validateEmpty: boolean;
+    config?: AxiosRequestConfig;
+    successMessage?: string;
+    errorMessage?: string;
+}
+
 export const usePeticionPost = <T extends Object>(initState: T) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { form, onChange, validateEmptyFields } = useForm(initState);
+    const { form, onChange, validateEmptyFields, clearValues } = useForm(initState);
 
-    const peticionPost = async(path:string, body: Object, validateEmpty: boolean, config?: AxiosRequestConfig) => {
+    const peticionPost = async(options: peticionPostOptions) => {
+        const { path, body, validateEmpty, config } = options;
+
         setIsLoading(true);
         if(validateEmpty) validateEmptyFields('Completa todos los campos');
         const response = await JustiAppApi.post(path, body, config)
@@ -27,11 +38,11 @@ export const usePeticionPost = <T extends Object>(initState: T) => {
         return response.data;
     }
 
-    const peticionPostAlert = async(path:string, body: Object, validateEmpty: boolean, config?: AxiosRequestConfig, alertMessage?: string) => {
-        const result = await peticionPost(path, body, validateEmpty, config)
+    const peticionPostAlert = async(options: peticionPostOptions) => {
+        const result = await peticionPost(options)
             .catch(error => {
                 setIsLoading(false);
-                Alert.alert("Error", (alertMessage) ? alertMessage : error.message);
+                Alert.alert("Error", (options.errorMessage) ? options.errorMessage : error.message);
             });
         return result;
     }
@@ -39,6 +50,7 @@ export const usePeticionPost = <T extends Object>(initState: T) => {
     return {
         form,
         onChange,
+        clearValues,
         isLoading,
         setIsLoading,
         peticionPost,

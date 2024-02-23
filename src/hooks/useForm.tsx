@@ -15,11 +15,18 @@ export const useForm = <T extends Object>(initState: T) => {
             }
         });
     }
- 
+    
+    const clearValues = () => {
+        for(let key in form) {
+            onChange('', key);
+        }
+    }
+
     return {
         ...form,
         form,
         onChange,
-        validateEmptyFields
+        validateEmptyFields,
+        clearValues,
     }
 }

@@ -4,3 +4,4 @@ export * from './screens/useLoginScreenInclusivo';
 export * from './usePeticionPut';
 export * from './useUploadFile';
 export * from './screens/useHomeScreen';
+export * from './useReproducirAudio';

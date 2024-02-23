@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "JustiApp",
-    "slug": "JustiApp",
+    "slug": "justiapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,8 +29,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "65037ac3-2db2-438b-964c-d379beceb409"
+        "projectId": "b6244479-9878-4657-8ba9-20b8755f037e"
       }
-    }
+    },
+    "owner": "mipape281003"
   }
 }

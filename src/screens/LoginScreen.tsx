@@ -13,7 +13,7 @@ import { Button, InputIcon, HeaderApp } from '../components';
 export const LoginScreen = () => {
     const { logIn, isLoadinUser } = useContext(AuthContext);
     const { changeModoInclusivo, settingsState } = useContext(SettingsContext);
-    const { form, isLoading, onChange, peticionPostAlert} = usePeticionPost({ 
+    const { form, isLoading, onChange, peticionPostAlert, clearValues} = usePeticionPost({ 
         correo: "", password: "" 
     });
 
@@ -26,13 +26,14 @@ export const LoginScreen = () => {
         modalVisible, 
     } = useLoginScreenInclusivo();
 
-    const handlePeticion = () => {
-        peticionPostAlert("/api/auth/login", form, true)
+    const handlePeticion = async() => {
+        await peticionPostAlert({ path: "/api/auth/login", body: form, validateEmpty: true })
             .then(res => {
                 if(!res || typeof res === 'string') return;
                 const { token, user } = res as UserAuthenticated;
                 logIn(user, token);
             });
+        clearValues();
     }
 
     return (

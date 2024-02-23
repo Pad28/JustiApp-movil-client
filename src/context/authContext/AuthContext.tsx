@@ -39,9 +39,14 @@ export const AuthProvider = ({ children }: { children: React.JSX.Element | React
             setIsLoading(false);
             return dispatch({ type: 'logOut' })
         };
-        const result = await peticionPostAlert('/api/auth/login/verify-jwt', {}, true, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        }, "La sesión a expirado");
+        const result = await peticionPostAlert({
+            path: '/api/auth/login/verify-jwt',
+            body: {},
+            validateEmpty: true,
+            config: {headers: {'Authorization': `Bearer ${token}`}},
+            errorMessage: "La sesión a expirado"
+        });
+
         setIsLoading(false);
         if(!result) return logOut();
         const { user, token: validatedToken } = result as UserAuthenticated;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { colors } from "../../theme/styles";
 import { AVPlaybackStatus, Audio } from 'expo-av';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useReproducirAudio } from "../useReproducirAudio";
 
 interface ModalProps {
     onPressAcept: () => void;
@@ -13,39 +14,29 @@ export const useLoginScreenInclusivo = () => {
     const [colorMatricula, setColorMatricula] = useState(colors.backgroundTerciary);
     const [colorPasswword, setColorPassword] = useState(colors.backgroundTerciary);
     const [modalVisible, setModalVisible] = useState(false);
-    
+    const { reproducirAudio } = useReproducirAudio();
+
     useEffect(() => {
         setModalVisible(true);
     }, []);
 
     async function leerMatricula() {
-        const soundObject = new Audio.Sound();
-        try {
-            await soundObject.loadAsync(require('../../../assets/audio/NumeroControl.mp3'));
-            setColorMatricula("yellow");
-            await soundObject.playAsync();
-            const { durationMillis } = await soundObject.getStatusAsync() as any;
-            setTimeout(() => {
-                setColorMatricula(colors.backgroundTerciary);
-            }, durationMillis);
-        } catch (error) {
-            console.error('Error cargando sonido para matrícula', error);
-        }
+        reproducirAudio({
+            soundPath: require('../../../assets/audio/NumeroControl.mp3'),
+            onPlayAudio: () => setColorMatricula("yellow"),
+            onEndAudio: () => setColorMatricula(colors.backgroundTerciary),
+            onStopAudio: () => setColorMatricula(colors.backgroundTerciary),
+        });
+
     }
     
     async function leerContrasena() {
-        const soundObject = new Audio.Sound();
-        try {
-            await soundObject.loadAsync(require('../../../assets/audio/Password.mp3'));
-            setColorPassword("yellow");
-            await soundObject.playAsync();
-            const { durationMillis } = await soundObject.getStatusAsync() as any;
-            setTimeout(() => {
-                setColorPassword("white");
-            }, durationMillis);
-        } catch (error) {
-            console.error('Error cargando sonido para contraseña', error);
-        }
+        reproducirAudio({
+            soundPath: require('../../../assets/audio/Password.mp3'),
+            onPlayAudio: () => setColorPassword("yellow"),
+            onEndAudio: () => setColorPassword(colors.backgroundTerciary),
+            onStopAudio: () => setColorPassword(colors.backgroundTerciary),
+        });
     }
 
     const RenderModal = ( { onPressAcept, modal }: ModalProps ) => {

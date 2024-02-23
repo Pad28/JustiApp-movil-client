@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, Linking } from "react-native";
 
 import * as ImagePicker from 'expo-image-picker';
@@ -58,14 +58,17 @@ export const useHomeScreen = () => {
             str = text;
         }
         if(!selectedImage) return Alert.alert('Error', 'Evidencia faltante');
+        const res = await peticionPostAlert({
+            path: '/api/justificante',
+            body: {
+                fecha_justificada_inicio: dates.start,
+                fecha_justificada_fin: dates.end,
+                motivo: str,
+            },
+            validateEmpty: false,
+            config: {headers: { 'Authorization': `Bearer ${token}` }}
+        });
 
-        const res = await peticionPostAlert('/api/justificante', {
-            fecha_justificada_inicio: dates.start,
-            fecha_justificada_fin: dates.end,
-            motivo: str,
-        }, false, { headers: {
-            Authorization: `Bearer ${token}`
-        }});
         const { justificante } = res as CreateJustificanteResponse;
         await uploadImage(
             selectedImage, 

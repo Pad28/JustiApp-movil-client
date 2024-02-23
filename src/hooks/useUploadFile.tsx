@@ -12,11 +12,14 @@ export const useUploadFile = () => {
             name: 'image.jpg'
         });
 
-        const response = await peticionPostAlert(pathApi, formData, false,{
-            headers: {
+        const response = await peticionPostAlert({
+            path: pathApi,
+            body: formData,
+            validateEmpty: false,
+            config: { headers: {
                 'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${token}`,
-            }
+                'Authorization': `Bearer ${token}`, 
+            }}
         });
         return response;
     }
