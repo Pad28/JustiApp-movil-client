@@ -31,7 +31,9 @@ export const usePeticionPost = <T extends Object>(initState: T) => {
                     throw new Error(error.response.data.errors[0].msg);
                 }
 
-                if(error.request) throw new Error('Ups... ocurrio un error, intentalo mas tarde.');
+                if(error.request) {
+                    throw new Error('Ups... ocurrio un error, intentalo mas tarde.');
+                }
             });
         setIsLoading(false);
         if(!response) return 'Error en la peticion';

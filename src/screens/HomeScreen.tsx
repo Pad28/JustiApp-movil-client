@@ -8,7 +8,7 @@ import { useHomeScreen } from "../hooks";
 
 
 export const HomeScreen = () => {
-    const { token } = useContext(AuthContext).authState;
+    const { token, userAuthenticated } = useContext(AuthContext).authState;
     const { settingsState } = useContext(SettingsContext);
     const {
         motivo, 
@@ -56,7 +56,11 @@ export const HomeScreen = () => {
 
                 <Button 
                     style={{ width: 130, marginTop: 50 }}
-                    onPress={() => handlePeticion(token!)}
+                    onPress={() => handlePeticion(
+                        token!, 
+                        userAuthenticated!.matricula, 
+                        userAuthenticated!.tutor!
+                    )}
                     text="Enviar"
                 />
                 </>

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Alert, Linking } from "react-native";
+import FormData  from 'form-data';
 
 import * as ImagePicker from 'expo-image-picker';
 import { ItemType } from "react-native-dropdown-picker";
-import { CreateJustificanteResponse } from "../../interfaces";
 import { usePeticionPost } from "../usePeticionPost";
 import { useUploadFile } from "../useUploadFile";
 
 export const useHomeScreen = () => {
-    const [text, setText] = useState(''); // Si se selecciona como motiov "otro"
+    const [text, setText] = useState(''); // Si se selecciona como motivo "otro"
 
     useEffect(() => {
         (async () => {
@@ -34,7 +34,7 @@ export const useHomeScreen = () => {
     ];
     const [selectedImage, setSelectedImage] = useState('');
 
-    const selectImage = async () => {
+    const selectImage = async() => {
         let result = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
         quality: 1,
@@ -50,31 +50,32 @@ export const useHomeScreen = () => {
     const { isLoading, peticionPostAlert, setIsLoading } = usePeticionPost({ 
         motivo: '', fecha_justificada_inicio: '', fecha_justificada_fin: '' 
     });
-    const { uploadImage, isLoading: isLoadingImg, setIsLoading: setIsLoadingImg } = useUploadFile();
 
-    const handlePeticion = async(token: string) => {
+    const handlePeticion = async(token: string, alumno: string, tutor: string) => {
         let str = motivo.label;
-        if(motivo.label == 'Otro') {
-            str = text;
-        }
+        if(motivo.label == 'Otro') str = text;
+
+        const data = new FormData();
+        data.append('evidencia_img', {
+            uri: selectImage,
+            type: 'image/jpeg',
+            name: 'image.jpg'
+        });
+        data.append('motivo', str);
+        data.append('fecha_justificada_inicio', dates.start);
+        data.append('fecha_justificada_fin', dates.end);
+        data.append('id_alumno', alumno);
+        data.append('id_tutor', tutor);
+
         if(!selectedImage) return Alert.alert('Error', 'Evidencia faltante');
         const res = await peticionPostAlert({
-            path: '/api/justificante',
-            body: {
-                fecha_justificada_inicio: dates.start,
-                fecha_justificada_fin: dates.end,
-                motivo: str,
-            },
+            path: '/api/justificante/enviar-evidencia',
+            body: data,
             validateEmpty: false,
             config: {headers: { 'Authorization': `Bearer ${token}` }}
         });
 
-        const { justificante } = res as CreateJustificanteResponse;
-        await uploadImage(
-            selectedImage, 
-            `/api/upload/evidencia/${justificante.id}`,
-            token!
-        );
+
         setMotivo({});
     }
 
@@ -87,11 +88,8 @@ export const useHomeScreen = () => {
         selectImage,
         selectedImage,
         isLoading,
-        isLoadingImg,
-        setIsLoadingImg,
         peticionPostAlert,
         setIsLoading,
-        uploadImage,
         handlePeticion,
         setText
     };

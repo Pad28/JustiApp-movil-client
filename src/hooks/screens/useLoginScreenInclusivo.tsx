@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { colors } from "../../theme/styles";
-import { AVPlaybackStatus, Audio } from 'expo-av';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useReproducirAudio } from "../useReproducirAudio";
 
@@ -13,19 +12,18 @@ interface ModalProps {
 export const useLoginScreenInclusivo = () => {
     const [colorMatricula, setColorMatricula] = useState(colors.backgroundTerciary);
     const [colorPasswword, setColorPassword] = useState(colors.backgroundTerciary);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(true);
     const { reproducirAudio } = useReproducirAudio();
-
-    useEffect(() => {
-        setModalVisible(true);
-    }, []);
+    const [counter, setCounter] = useState(0);
 
     async function leerMatricula() {
         reproducirAudio({
             soundPath: require('../../../assets/audio/NumeroControl.mp3'),
-            onPlayAudio: () => setColorMatricula("yellow"),
+            onPlayAudio: () => {
+                setColorMatricula("yellow");
+                setColorPassword(colors.backgroundTerciary);
+            },
             onEndAudio: () => setColorMatricula(colors.backgroundTerciary),
-            onStopAudio: () => setColorMatricula(colors.backgroundTerciary),
         });
 
     }
@@ -33,9 +31,11 @@ export const useLoginScreenInclusivo = () => {
     async function leerContrasena() {
         reproducirAudio({
             soundPath: require('../../../assets/audio/Password.mp3'),
-            onPlayAudio: () => setColorPassword("yellow"),
+            onPlayAudio: () => {
+                setColorPassword("yellow");
+                setColorMatricula(colors.backgroundTerciary);
+            },
             onEndAudio: () => setColorPassword(colors.backgroundTerciary),
-            onStopAudio: () => setColorPassword(colors.backgroundTerciary),
         });
     }
 
@@ -80,6 +80,8 @@ export const useLoginScreenInclusivo = () => {
         colorPasswword,
         RenderModal,
         modalVisible,
+        setCounter,
+        counter,
     };
 }
 

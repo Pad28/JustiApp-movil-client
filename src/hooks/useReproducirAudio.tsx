@@ -16,8 +16,9 @@ export const useReproducirAudio = () => {
         
         const audioActual = sound;
         if (audioActual) {
-            await sound.stopAsync();
+            await audioActual.stopAsync();
             if(onStopAudio) onStopAudio();
+            audioActual.unloadAsync();
             setSound(undefined);
         }
         
@@ -31,6 +32,7 @@ export const useReproducirAudio = () => {
             setTimeout(() => {
                 if(onEndAudio) onEndAudio();
                 setSound(undefined);
+                newSound.unloadAsync();
             }, durationMillis);
         } catch (error) {
             console.error('Error cargando sonido para matrícula', error);

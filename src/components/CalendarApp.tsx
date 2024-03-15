@@ -86,7 +86,7 @@ export const CalendarApp = ({ style, getDates }: Props) => {
         </View>
     );
 }
-
+// 
 const styles = StyleSheet.create({
     continer: {
         flexDirection: 'row',

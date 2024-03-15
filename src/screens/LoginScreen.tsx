@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { 
-    ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, StyleSheet, View 
+    ActivityIndicator, Alert, Image, KeyboardAvoidingView, ScrollView, StyleSheet, View 
 } from 'react-native';
 
 import { AuthContext, SettingsContext } from '../context';
@@ -9,10 +9,15 @@ import { UserAuthenticated } from '../interfaces';
 import { useLoginScreenInclusivo, usePeticionPost } from '../hooks';
 import { colors, globalStyles } from '../theme/styles';
 import { Button, InputIcon, HeaderApp } from '../components';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export const LoginScreen = () => {
     const { logIn, isLoadinUser } = useContext(AuthContext);
-    const { changeModoInclusivo, settingsState } = useContext(SettingsContext);
+   
+    const { 
+        changeModoInclusivo, settingsState, changeDevelopmentSettings 
+    } = useContext(SettingsContext);
+    
     const { form, isLoading, onChange, peticionPostAlert, clearValues} = usePeticionPost({ 
         correo: "", password: "" 
     });
@@ -24,7 +29,16 @@ export const LoginScreen = () => {
         leerMatricula, 
         RenderModal, 
         modalVisible, 
+        counter,
+        setCounter
     } = useLoginScreenInclusivo();
+
+    useEffect(() => {
+        if(counter == 20 && !settingsState.developmentSettings ) {
+            changeDevelopmentSettings(true);
+            Alert.alert('Alert', 'Opciones de desarrollo activadas');
+        }
+    }, [counter]);
 
     const handlePeticion = async() => {
         await peticionPostAlert({ path: "/api/auth/login", body: form, validateEmpty: true })
@@ -41,15 +55,20 @@ export const LoginScreen = () => {
             <HeaderApp height={140} />
             <View style={ globalStyles.container } >
                 <KeyboardAvoidingView>
-                    <ScrollView showsHorizontalScrollIndicator={false} >       
-                        <RenderModal 
+                    <ScrollView showsHorizontalScrollIndicator={false} >     
+
+                        {/* <RenderModal 
                             modal={modalVisible}
                             onPressAcept={() => changeModoInclusivo(true)}
-                        />
+                        /> */}
+                        <TouchableWithoutFeedback
+                            onPress={() => setCounter(counter + 1)}
+                        >
                         <Image 
                             source={require("../../assets/JustiAppLogo.png")}
                             style={[ styles.image, { marginTop: 50 } ]}
                         />
+                        </TouchableWithoutFeedback>
                         {
                             (isLoading || isLoadinUser) ? (
                                 <View style={{ marginTop: 100 }} >

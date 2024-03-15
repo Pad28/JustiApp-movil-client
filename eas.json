@@ -8,10 +8,7 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal",
-      "env": {
-        "EXPO_PUBLIC_API_URL": "http://tux-server.ddns.net:8085"
-      }
+      "distribution": "internal"
     },
     "production": {}
   },

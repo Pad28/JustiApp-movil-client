@@ -1,15 +1,18 @@
-import { View, StyleSheet, ActivityIndicator, Alert, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ScrollView, Text } from "react-native";
 import { useContext, useState } from "react";
 
 import { AuthContext, SettingsContext } from "../context";
-import { colors, globalStyles, heightWindow } from "../theme/styles";
+import { colors, globalStyles, } from "../theme/styles";
 import { Button, ButtonIcon, Incrementer, ModalInput } from "../components";
 import { usePeticionPut } from "../hooks/usePeticionPut";
 import { User, UserUpdateResponse } from "../interfaces";
 
 export const SettingsScreen = () => {
     const { logOut, authState, logIn  } = useContext(AuthContext);
-    const { changeFontSize, settingsState } = useContext(SettingsContext);
+    
+    const { 
+        changeFontSize, settingsState, changeDevelopmentSettings,
+    } = useContext(SettingsContext);
 
     const [ nombreModal, setNombreModal] = useState(false);
     const [ apellidosModal, setApellidosModal] = useState(false);
@@ -81,8 +84,30 @@ export const SettingsScreen = () => {
                             )}
                         />
                     </View>
+                    
+                    {(settingsState.developmentSettings) && (
+                        <View>
+                            <Text style={{ fontSize: settingsState.fontSize }} >
+                                AuthContext
+                            </Text>
+                            <Text style={{ backgroundColor: colors.backgroundTerciary }} >
+                                { JSON.stringify(authState, null, 5) }
+                            </Text>
+                            <Text style={{ fontSize: settingsState.fontSize }} >
+                                SettingsContext
+                            </Text>
+                            <Text style={{ backgroundColor: colors.backgroundTerciary }} >
+                                { JSON.stringify(settingsState, null, 5) }
+                            </Text>
                             
-
+                            <Button
+                                onPress={() => changeDevelopmentSettings(false)}
+                                text="Desactivar información de desarrollador"
+                                style={{ marginTop: 20 }}
+                            />
+                        </View>
+                    )}        
+                    
                     <Button 
                         text="Cerrar sesión"
                         onPress={logOut}

@@ -2,9 +2,9 @@
   "expo": {
     "name": "JustiApp",
     "slug": "justiapp",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/JustiAppLogo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/JustiAppLogo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.mipape281003.JustiApp"
@@ -32,6 +32,12 @@
         "projectId": "b6244479-9878-4657-8ba9-20b8755f037e"
       }
     },
-    "owner": "mipape281003"
+    "owner": "mipape281003",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b6244479-9878-4657-8ba9-20b8755f037e"
+    }
   }
 }

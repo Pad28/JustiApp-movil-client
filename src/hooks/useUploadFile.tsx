@@ -1,4 +1,4 @@
-import FormData  from 'form-data';
+import FormData from 'form-data';
 import { usePeticionPost } from './usePeticionPost';
 
 export const useUploadFile = () => {
