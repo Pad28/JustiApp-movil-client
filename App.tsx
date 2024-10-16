@@ -5,6 +5,7 @@ import { LoginStackNavigator } from './src/navigaton';
 import { AuthProvider, SettingsProvider } from './src/context';
 
 export default function App() {
+
   return (
     <NavigationContainer>
       <AppState>

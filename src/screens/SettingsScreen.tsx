@@ -1,4 +1,4 @@
-import { View, StyleSheet, ActivityIndicator, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ScrollView, Text, Switch } from "react-native";
 import { useContext, useState } from "react";
 
 import { AuthContext, SettingsContext } from "../context";
@@ -11,7 +11,7 @@ export const SettingsScreen = () => {
     const { logOut, authState, logIn  } = useContext(AuthContext);
     
     const { 
-        changeFontSize, settingsState, changeDevelopmentSettings,
+        changeFontSize, settingsState, changeDevelopmentSettings, changeModoInclusivo
     } = useContext(SettingsContext);
 
     const [ nombreModal, setNombreModal] = useState(false);
@@ -76,13 +76,32 @@ export const SettingsScreen = () => {
                         <Text style={{ fontSize: settingsState.fontSize }} >Tamaño de letra</Text>
                         <Incrementer 
                             value={settingsState.fontSize}
-                            onPressPlus={() => changeFontSize(
-                                settingsState.fontSize + 1
-                            )}
-                            onPressRest={() => changeFontSize(
-                                settingsState.fontSize - 1
-                            )}
+                            onPressPlus={() => {
+                                if(settingsState.fontSize < 25) {
+                                    changeFontSize(settingsState.fontSize + 1);
+                                }
+                            }}
+                            onPressRest={() => {
+                                if(settingsState.fontSize > 16) {
+                                    changeFontSize(settingsState.fontSize - 1)
+                                }
+                                
+                            }}
                         />
+                    </View>
+
+                    <View style={[styles.containerIncrement]}>
+                        <View style={{ flex:1, alignItems: "center"}} >
+                            <Text style={{ fontSize: settingsState.fontSize }} >Modo inclusivo</Text>
+                        </View>
+                        <View style={{ flex:1, alignItems: "center"  }} >
+                            <Switch 
+                                trackColor={{false: '#767577', true: '#81b0ff'}}
+                                thumbColor={settingsState.modoInclusivo ? '#f5dd4b' : '#f4f3f4'}
+                                value={settingsState.modoInclusivo}
+                                onValueChange={() => changeModoInclusivo(!settingsState.modoInclusivo)}
+                            />
+                        </View>
                     </View>
                     
                     {(settingsState.developmentSettings) && (
@@ -113,11 +132,11 @@ export const SettingsScreen = () => {
                         onPress={logOut}
                         color={'black'}
                         fontColor="white"
-                        style={{ marginTop: 160 }}
+                        style={{ marginTop: 100 }}
                         iconName="log-out"
                     />
 
-                    <View style={{height: 200}} />
+                    <View style={{height: 260}} />
                 </ScrollView>
             )}
 

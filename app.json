@@ -1,5 +1,15 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
     "name": "JustiApp",
     "slug": "justiapp",
     "version": "1.0.2",
@@ -29,7 +39,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "b6244479-9878-4657-8ba9-20b8755f037e"
+        "projectId": "5c8aa066-1d0d-4547-98bf-44f1926d58f1"
       }
     },
     "owner": "mipape281003",
@@ -37,7 +47,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/b6244479-9878-4657-8ba9-20b8755f037e"
+      "url": "https://u.expo.dev/5c8aa066-1d0d-4547-98bf-44f1926d58f1"
     }
   }
 }

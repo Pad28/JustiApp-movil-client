@@ -9,9 +9,11 @@ interface Props {
     values: {label: string, value: string}[];
     getValue: (value: ItemType<string>) => void;
     style?: StyleProp<ViewStyle>;
+    styleDrop?: StyleProp<ViewStyle>;
+    onPress?: () => void;
 }
 
-export const DropBox = ({ getValue, texto, values, style}: Props) => {
+export const DropBox = ({ getValue, texto, values, style, onPress, styleDrop}: Props) => {
     const { settingsState } = useContext(SettingsContext);
 
     const [open, setOpen] = useState(false);
@@ -27,14 +29,13 @@ export const DropBox = ({ getValue, texto, values, style}: Props) => {
             open={open}
             setOpen={setOpen}
             setValue={setValue}
-            style={{
-                width: 250
-            }}
+            style={[{ width: 250}, styleDrop]}
             containerStyle={{
               width: 250
             }}
             onSelectItem={getValue}
             language="ES"
+            onPress={onPress}
         />
       </View>
     );

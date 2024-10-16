@@ -13,9 +13,10 @@ interface Props {
         start: string;
         end: string;
     }>>
+    onPress?: () => void;
 }
 
-export const CalendarApp = ({ style, getDates }: Props) => {
+export const CalendarApp = ({ style, getDates, onPress }: Props) => {
     const { settingsState } = useContext(SettingsContext);
 
     const [text, setText] = useState('Ingresar fechas a justificar');
@@ -50,11 +51,21 @@ export const CalendarApp = ({ style, getDates }: Props) => {
         markedDates[endDate] = { endingDay: true, color: colors.terciary };
     }
 
+    const fechaActual = new Date();
+    const fechaMinima = new Date(fechaActual);
+    fechaMinima.setDate(fechaActual.getDate() - 4);
+
     return (
         <View style={[ styles.continer, style ]}>
 
             <Text style={{ fontSize: settingsState.fontSize }} > {text} </Text>
-            <TouchableOpacity style={ styles.boton } onPress={() => setShowModal(true)} >
+            <TouchableOpacity 
+                style={ styles.boton } 
+                onPress={() => {
+                    setShowModal(true)
+                    if(onPress) onPress();
+                }} 
+            >
                 <Ionicons name="calendar" size={40} />
             </TouchableOpacity>
 
@@ -67,7 +78,7 @@ export const CalendarApp = ({ style, getDates }: Props) => {
                     <Calendar
                         style={styles.calendar}
                         onDayPress={handleDayPress}
-                        minDate={new Date().toString()}
+                        minDate={fechaMinima.toString()}
                         markingType="period"
                         markedDates={markedDates}
                     />

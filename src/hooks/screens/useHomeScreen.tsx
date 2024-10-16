@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Alert, Linking } from "react-native";
-import FormData  from 'form-data';
+import FormData from 'form-data';
 
 import * as ImagePicker from 'expo-image-picker';
 import { ItemType } from "react-native-dropdown-picker";
 import { usePeticionPost } from "../usePeticionPost";
 import { useUploadFile } from "../useUploadFile";
+import { envs } from "../../config/envs";
+import axios from "axios";
 
 export const useHomeScreen = () => {
-    const [text, setText] = useState(''); // Si se selecciona como motivo "otro"
-
     useEffect(() => {
         (async () => {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -20,6 +20,11 @@ export const useHomeScreen = () => {
         })();
     }, []);
 
+    const { isLoading, peticionPostAlert, setIsLoading } = usePeticionPost({ 
+        motivo: '', fecha_justificada_inicio: '', fecha_justificada_fin: '' 
+    });
+    const { uploadImage, isLoading: isLoadingUpload, setIsLoading: setIsLoadingUpload } = useUploadFile();
+    const [text, setText] = useState(''); // Si se selecciona como motivo "otro"
     const [dates, setDates] = useState({ start: '', end: '' });
     const [motivo, setMotivo] = useState<ItemType<string>>({ label: '', value: '' });
     const motivos = [
@@ -27,59 +32,72 @@ export const useHomeScreen = () => {
         {label: 'Perdida de libertad', value: 'Perdida de libertad'},
         {label: 'Comisión de trabajo', value: 'Comisión de trabajo'},
         {label: 'Comisión de institucional', value: 'Comisión de institucional'},
-        {label: 'Fallecimineto de un familial', value: 'Fallecimineto de un familiar'},
+        {label: 'Fallecimiento de un familiar', value: 'Fallecimiento de un familiar'},
         {label: 'Accidente', value: 'Accidente'},
-        {label: 'Tramite oficial externo', value: 'Tramite oficial externo'},
+        {label: 'Trámite oficial externo', value: 'Trámite oficial externo'},
         {label: 'Otro', value: 'Otro'}
     ];
-    const [selectedImage, setSelectedImage] = useState('');
+    const [selectedImage, setSelectedImage] = useState<string>('');
+    const [isSelectedImage, setIsSelectedImage] = useState<boolean>(false);
 
     const selectImage = async() => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        quality: 1,
+        const result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            quality: 1,
         });
 
-        if (!result.canceled) {
-            setSelectedImage(result.assets[0].uri)
-        } else {
-            Alert.alert('Aviso', 'No hay imagen que subir')
+        if (result.canceled) {
+            setIsSelectedImage(false);
+            return Alert.alert('Aviso', 'No hay imagen que subir');
         }
+        setSelectedImage(result.assets[0].uri)
+        setIsSelectedImage(true);
     };
 
-    const { isLoading, peticionPostAlert, setIsLoading } = usePeticionPost({ 
-        motivo: '', fecha_justificada_inicio: '', fecha_justificada_fin: '' 
-    });
-
     const handlePeticion = async(token: string, alumno: string, tutor: string) => {
-        let str = motivo.label;
-        if(motivo.label == 'Otro') str = text;
+        setIsLoading(true);
+            let str = motivo.label;
+            if(motivo.label == 'Otro') str = text;
+            if(!selectedImage) return Alert.alert("Error", "Evidencia no selecionada");
+            try {
 
-        const data = new FormData();
-        data.append('evidencia_img', {
-            uri: selectImage,
-            type: 'image/jpeg',
-            name: 'image.jpg'
-        });
-        data.append('motivo', str);
-        data.append('fecha_justificada_inicio', dates.start);
-        data.append('fecha_justificada_fin', dates.end);
-        data.append('id_alumno', alumno);
-        data.append('id_tutor', tutor);
+                const filePath = selectedImage;
+                const formData = new FormData();
+                formData.append('evidencia_img', {
+                    uri: filePath,
+                    type: 'image/jpeg',
+                    name: 'image.jpg'
+                });
+                
+                formData.append('motivo', str);
+                formData.append('fecha_justificada_inicio', dates.start);
+                formData.append('fecha_justificada_fin', dates.end);
+                formData.append('id_alumno', alumno);
+                formData.append('id_tutor', tutor);
+                
+                const config = {
+                    method: 'post',
+                    url: `${envs.API_URL}/api/justificante/enviar-evidencia`,
+                    headers: {
+                      'Authorization': `Bearer ${token}`,
+                      'Content-Type': 'multipart/form-data'
+                    },
+                    data: formData
+                };
+                await axios.request(config);
+                Alert.alert('Éxito', 'Justificante enviado con exito');
+                setIsSelectedImage(false);
+                setIsLoading(false);
+            } catch (error) {
+                console.log(error);
+                Alert.alert("Error", "Hubo un error al subir la imagen");
+                
+            }
 
-        if(!selectedImage) return Alert.alert('Error', 'Evidencia faltante');
-        const res = await peticionPostAlert({
-            path: '/api/justificante/enviar-evidencia',
-            body: data,
-            validateEmpty: false,
-            config: {headers: { 'Authorization': `Bearer ${token}` }}
-        });
-
-
-        setMotivo({});
-    }
+        }
 
     return {
+        isSelectedImage,
         motivos,
         setMotivo,
         setDates,
@@ -88,6 +106,7 @@ export const useHomeScreen = () => {
         selectImage,
         selectedImage,
         isLoading,
+        isLoadingUpload,
         peticionPostAlert,
         setIsLoading,
         handlePeticion,

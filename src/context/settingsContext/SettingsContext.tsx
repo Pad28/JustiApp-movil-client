@@ -11,7 +11,7 @@ export interface SettingsState {
 }
 
 export const settingsInitialState: SettingsState  = {
-    fontSize: 22,
+    fontSize: 20,
     modoInclusivo: false,
     developmentSettings: false,
 }
@@ -41,10 +41,11 @@ export const SettingsProvider = ({children}: { children: React.JSX.Element | Rea
 
         const apiUrl = await AsyncStorage.getItem('api_url');
         (apiUrl) ? changeApiUrl(apiUrl) : changeApiUrl(envs.API_URL);
+        // changeApiUrl(envs.API_URL);
     }
 
     const changeFontSize = async(size: number) => {
-        await AsyncStorage.setItem('fontSize', size.toString());
+        await AsyncStorage.setItem("fontSize", size.toString());
         dispatch({ type: "changeFontSize", payload: size });
     };
     

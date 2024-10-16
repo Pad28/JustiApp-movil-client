@@ -25,7 +25,7 @@ export const usePeticionPost = <T extends Object>(initState: T) => {
         if(validateEmpty) validateEmptyFields('Completa todos los campos');
         const response = await JustiAppApi.post(path, body, config)
             .catch(error => {
-                setIsLoading(false);
+                console.log(error);
                 if(error.response) {
                     if(error.response.data.error) throw new Error(error.response.data.error);
                     throw new Error(error.response.data.errors[0].msg);

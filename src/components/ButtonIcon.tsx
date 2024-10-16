@@ -25,7 +25,12 @@ export const ButtonIcon = ({ style, onPress, text, iconName, label }: Props) => 
                 style={styles.boton}
             >
                 <View style={{...styles.columnBoton, justifyContent: 'flex-start'}} >
-                    <Text style={{ ...styles.text, fontSize: fontSize }} > {text} </Text>
+                    <Text 
+                        style={{ ...styles.text, fontSize: fontSize }} 
+                        numberOfLines={1}
+                    > 
+                        {text} 
+                    </Text>
                 </View>
                 <View style={{...styles.columnBoton, justifyContent: 'flex-end'}} >
                     <Ionicons name={iconName} size={28} />
@@ -37,6 +42,7 @@ export const ButtonIcon = ({ style, onPress, text, iconName, label }: Props) => 
 
 const styles = StyleSheet.create({
     container: {
+        alignSelf: "center",
         flexDirection: 'row',
         alignItems: 'center',
         width: widthWindow - 40,
@@ -64,6 +70,6 @@ const styles = StyleSheet.create({
     },
     constinerLabel: {
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     }
 });

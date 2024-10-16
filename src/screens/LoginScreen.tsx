@@ -1,54 +1,29 @@
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
 import { 
-    ActivityIndicator, Alert, Image, KeyboardAvoidingView, ScrollView, StyleSheet, View 
+    ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, StyleSheet, TouchableWithoutFeedback, View 
 } from 'react-native';
 
-import { AuthContext, SettingsContext } from '../context';
-import { UserAuthenticated } from '../interfaces';
-
-import { useLoginScreenInclusivo, usePeticionPost } from '../hooks';
+import { useLoginScreenInclusivo } from '../hooks';
 import { colors, globalStyles } from '../theme/styles';
 import { Button, InputIcon, HeaderApp } from '../components';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export const LoginScreen = () => {
-    const { logIn, isLoadinUser } = useContext(AuthContext);
-   
-    const { 
-        changeModoInclusivo, settingsState, changeDevelopmentSettings 
-    } = useContext(SettingsContext);
-    
-    const { form, isLoading, onChange, peticionPostAlert, clearValues} = usePeticionPost({ 
-        correo: "", password: "" 
-    });
 
     const { 
+        settingsState,
         colorMatricula, 
         colorPasswword, 
         leerContrasena, 
         leerMatricula, 
         RenderModal, 
-        modalVisible, 
         counter,
-        setCounter
+        setCounter,
+        isLoadinUser,
+        handlePeticion,
+        isLoading,
+        onChange,
+        changeModoInclusivo
     } = useLoginScreenInclusivo();
-
-    useEffect(() => {
-        if(counter == 20 && !settingsState.developmentSettings ) {
-            changeDevelopmentSettings(true);
-            Alert.alert('Alert', 'Opciones de desarrollo activadas');
-        }
-    }, [counter]);
-
-    const handlePeticion = async() => {
-        await peticionPostAlert({ path: "/api/auth/login", body: form, validateEmpty: true })
-            .then(res => {
-                if(!res || typeof res === 'string') return;
-                const { token, user } = res as UserAuthenticated;
-                logIn(user, token);
-            });
-        clearValues();
-    }
 
     return (
         <View style={{ flex: 1 }} >
@@ -57,10 +32,10 @@ export const LoginScreen = () => {
                 <KeyboardAvoidingView>
                     <ScrollView showsHorizontalScrollIndicator={false} >     
 
-                        {/* <RenderModal 
-                            modal={modalVisible}
+                        <RenderModal 
                             onPressAcept={() => changeModoInclusivo(true)}
-                        /> */}
+                        />
+
                         <TouchableWithoutFeedback
                             onPress={() => setCounter(counter + 1)}
                         >
@@ -78,7 +53,7 @@ export const LoginScreen = () => {
                                 <>
                                 <InputIcon 
                                     style={{ alignSelf: "center", marginTop: 40, backgroundColor: colorMatricula }}
-                                    onChangeText={value => onChange(`${value}@upt.edu.mx`, "correo")}
+                                    onChangeText={value => onChange(value, "matricula")}
                                     placeholder="Matricula"
                                     iconName='person'
                                     onFocus={settingsState.modoInclusivo ? leerMatricula : () => {}}

@@ -24,6 +24,7 @@ export const useReproducirAudio = () => {
         
         const newSound = new Audio.Sound();
         setSound(newSound);
+        
         try {
             await newSound.loadAsync(soundPath);
             if(onPlayAudio) onPlayAudio();

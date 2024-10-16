@@ -14,14 +14,13 @@ export const Incrementer = ({ value, onPressPlus, onPressRest }: Props) => {
     const [ v, setV ] = useState(value);
 
     const handelValue = (incremento: number) => setV(v + incremento);
-    
 
     return (
         <View style={styles.container} >
             <TouchableOpacity 
                 style={styles.botonLeft} 
                 onPress={() => {
-                    handelValue(-1);
+                    if(v > 16) handelValue(-1);
                     onPressRest();
                 }}
             >
@@ -35,7 +34,7 @@ export const Incrementer = ({ value, onPressPlus, onPressRest }: Props) => {
             <TouchableOpacity 
                 style={styles.botonRight} 
                 onPress={() => {
-                    handelValue(1);
+                    if(v < 25) handelValue(1);
                     onPressPlus();
                 }}
             >

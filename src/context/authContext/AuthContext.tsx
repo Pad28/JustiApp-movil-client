@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.JSX.Element | React
     const { isLoading, setIsLoading, peticionPostAlert } = usePeticionPost({});
 
     useEffect(() => {
-        checkUser();
+        // checkUser();
     }, [])
 
     // Validar que el JWT del usuario aún sea valido.
